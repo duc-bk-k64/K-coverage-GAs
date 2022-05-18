@@ -2,13 +2,14 @@ package TSP;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class Chromosome {
-	private static int size = 48;
+	private static int size = 51;
 	private ArrayList<Integer> vertex;
 	public static ArrayList<Point> data;
-
+	Random random = new Random();
 	private Point point = new Point();
 
 	public ArrayList<Integer> getVertex() {
@@ -60,9 +61,23 @@ public class Chromosome {
 
 	}
 
+	public Chromosome crossoverCycle(Chromosome p, Chromosome q) {
+		ArrayList<Integer> a = new ArrayList<Integer>();
+		List<ArrayList<Integer>> list = this.findCycle(p, q);
+		for (int i = 0; i < list.size(); i++) {
+			list.get(i).forEach(k -> {
+				a.add(k);
+			});
+		}
+		Chromosome chromosome = new Chromosome();
+		chromosome.setVertex(a);
+		return chromosome;
+	}
+
 	public Chromosome mutation(Chromosome p) {
 		ArrayList<Integer> z = new ArrayList<Integer>();
-		for(int i=0;i<size;i++) z.add(p.getVertex().get(i));
+		for (int i = 0; i < size; i++)
+			z.add(p.getVertex().get(i));
 		Random random = new Random();
 		int g = random.nextInt(size - 1);
 		int h = random.nextInt(size - 1);
@@ -70,6 +85,38 @@ public class Chromosome {
 		Collections.swap(z, g, h);
 		Chromosome chromosome = new Chromosome(z);
 		return chromosome;
+	}
+
+	public List<ArrayList<Integer>> findCycle(Chromosome p, Chromosome q) {
+		List<ArrayList<Integer>> cycle = new ArrayList<ArrayList<Integer>>();
+		int[] inq = new int[Chromosome.size + 1];
+		for (int i = 0; i < Chromosome.size + 1; i++)
+			inq[i] = 0;
+		int a = -999;
+		int index = 0;
+		for (int i = 0; i < Chromosome.size; i++) {
+			if (inq[p.getVertex().get(i)] == 0) {
+				ArrayList<Integer> list = new ArrayList<Integer>();
+				index = i;
+				inq[p.getVertex().get(i)] = 1;
+				while (true) {
+					a = p.getVertex().get(index);
+					inq[p.getVertex().get(index)] = 1;
+					list.add(a);
+					for (int j = 0; j < Chromosome.size; j++) {
+						if (q.getVertex().get(j) == a) {
+							index = j;
+							break;
+						}
+					}
+
+					if (inq[p.getVertex().get(index)] == 1)
+						break;
+				}
+				cycle.add(list);
+			}
+		}
+		return cycle;
 	}
 
 	public double fitness(Chromosome p) {
@@ -83,7 +130,7 @@ public class Chromosome {
 
 	@SuppressWarnings("static-access")
 	public void loadVertex() throws Exception {
-		this.data = point.readData("D:/att48.tsp.txt");
+		this.data = point.readData("D:/eil51.tsp.txt");
 	}
 
 	public double compare(Chromosome a, Chromosome b) {
@@ -97,16 +144,28 @@ public class Chromosome {
 		}
 		System.out.println();
 	}
-
+//
 //	public static void main(String[] args) throws Exception {
-//		ArrayList<Integer> x = new ArrayList<>();
-//		ArrayList<Integer> y = new ArrayList<>();
+//		ArrayList<Integer> x = new ArrayList<Integer>();
+//		ArrayList<Integer> y = new ArrayList<Integer>();
 //		Chromosome zChromosome = new Chromosome();
-//		Point point=new Point();
-//		for (int i = 1; i <= 51; i++) {
+//		for (int i = 1; i <= Chromosome.size; i++) {
 //			x.add(i);
 //			y.add(i);
 //		}
+//		Collections.shuffle(x);
+//		Collections.shuffle(y);
+//		Chromosome chromosome = new Chromosome(x);
+//		Chromosome chromosome2 = new Chromosome(y);
+//		chromosome.printf();
+//		chromosome2.printf();
+//		zChromosome.findCycle(chromosome, chromosome2).forEach(list -> {
+//			for (int i = 0; i < list.size(); i++)
+//				System.out.print(" " + list.get(i));
+//			System.out.println();
+//		});
+//		zChromosome.crossoverCycle(chromosome, chromosome2).printf();
+//	}
 //
 //		Collections.shuffle(x);
 //		Chromosome chromosome1 = new Chromosome(x);

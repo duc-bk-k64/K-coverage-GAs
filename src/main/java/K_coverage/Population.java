@@ -11,6 +11,8 @@ public class Population {
 	public Individual individual = new Individual();
 	public Random random = new Random();
 	public ArrayList<Double> p;
+	ArrayList<Individual> fesibale = new ArrayList<Individual>();
+	ArrayList<Individual> infesible = new ArrayList<Individual>();
 
 	public void init() {
 		ArrayList<Individual> list = new ArrayList<Individual>();
@@ -73,9 +75,9 @@ public class Population {
 	}
 
 	public void select() {
-		ArrayList<Individual> fesibale = this.fesibleFamilis();
-		ArrayList<Individual> infesible = this.infesibleFamilis();
-		Collections.sort(fesibale, new Comparator<Individual>() {
+		this.fesibleFamilis();
+		this.infesibleFamilis();
+		Collections.sort(this.fesibale, new Comparator<Individual>() {
 			public int compare(Individual p, Individual q) {
 				Double a = p.fitness();
 				Double b = q.fitness();
@@ -88,7 +90,7 @@ public class Population {
 			}
 
 		});
-		Collections.sort(infesible, new Comparator<Individual>() {
+		Collections.sort(this.infesible, new Comparator<Individual>() {
 			public int compare(Individual p, Individual q) {
 				int NV1 = p.check();
 				int NV2 = q.check();
@@ -99,9 +101,16 @@ public class Population {
 					int CV2 = q.amount();
 					if (CV1 < CV2)
 						return -1;
-					else if (CV1 == CV2)
-						return 0;
-					else
+					else if (CV1 == CV2) {
+						Double a = p.fitness();
+						Double b = q.fitness();
+						if (a.compareTo(b) > 0)
+							return -1;
+						else if (a.compareTo(b) == 0)
+							return 0;
+						else
+							return 1;
+					} else
 						return 1;
 				}
 
@@ -112,7 +121,7 @@ public class Population {
 		});
 		ArrayList<Individual> childPopulation = new ArrayList<Individual>(); // select best individual for child
 																				// population
-		if (fesibale.size() >= size - 2) {
+		if (fesibale.size() >= size - 2 && infesible.size() >= 2) {
 			for (int i = 0; i < size - 2; i++)
 				childPopulation.add(fesibale.get(i));
 			childPopulation.add(infesible.get(0));
@@ -139,17 +148,17 @@ public class Population {
 		this.population = population;
 	}
 
-	public Individual getBest() {
-		Individual bestIndividual = this.population.get(0);
-		double best = bestIndividual.fitness();
-		for (int i = 0; i < this.population.size(); i++) {
-			if (this.population.get(i).fitness() > best) {
-				bestIndividual = this.population.get(i);
-				best = bestIndividual.fitness();
-			}
-		}
-		return bestIndividual;
-	}
+//	public Individual getBest() {
+//		Individual bestIndividual = this.population.get(0);
+//		double best = bestIndividual.fitness();
+//		for (int i = 0; i < this.population.size(); i++) {
+//			if (this.population.get(i).fitness() > best) {
+//				bestIndividual = this.population.get(i);
+//				best = bestIndividual.fitness();
+//			}
+//		}
+//		return bestIndividual;
+//	}
 
 	public void print() {
 		System.out.println("Size:" + this.population.size());
@@ -159,41 +168,53 @@ public class Population {
 
 	public void printCoverage() {
 		System.out.println("Coverage:");
+		int count = 0;
+		int sum = 0;
+		Individual individual = this.population.get(0);
 		for (int i = 0; i < Individual.N; i++) {
-			System.out.print(this.getBest().Cov(i) + ", ");
+			// System.out.print(individual.CovCost(i) + ", ");
+			sum++;
+			if (individual.Cov(i) >= Individual.k)
+				count++;
 		}
-		System.out.println();
+		System.out.println(100.0 * count / sum + "%");
 	}
 
 	public void printConnected() {
 		System.out.println("Conected:");
+		Individual individual = this.population.get(0);
+		int count = 0;
+		int sum = 0;
 		for (int i = 0; i < Individual.K; i++) {
-			if (this.getBest().getChromosome().get(i) != 0) {
-				System.out.print(this.getBest().Com(i) + ", ");
+			if (individual.getChromosome().get(i) != 0) {
+				sum++;
+				if (individual.Com(i) >= Individual.m)
+					count++;
+				// System.out.print(individual.ComCost(i) + ", ");
 			}
 		}
-		System.out.println();
+		System.out.println(100.0 * count / sum + "%");
 
 	}
 
-	public ArrayList<Individual> fesibleFamilis() {
+	public void fesibleFamilis() {
 		ArrayList<Individual> list = new ArrayList<Individual>();
 		for (int i = 0; i < this.population.size(); i++) {
 			if (this.population.get(i).check() == 0) {
 				list.add(this.population.get(i));
 			}
 		}
-		return list;
+		this.fesibale = list;
 	}
 
-	public ArrayList<Individual> infesibleFamilis() {
+	public void infesibleFamilis() {
 		ArrayList<Individual> list = new ArrayList<Individual>();
 		for (int i = 0; i < this.population.size(); i++) {
 			if (this.population.get(i).check() != 0) {
 				list.add(this.population.get(i));
 			}
 		}
-		return list;
+		this.infesible = list;
 	}
 
 }

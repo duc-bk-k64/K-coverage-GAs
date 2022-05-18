@@ -1,11 +1,12 @@
 package TSP;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
 public class Population {
-	private int size =800;
+	public static int size = 200;
 	private ArrayList<Chromosome> population;
 	private Chromosome chromosome = new Chromosome();
 	private Random random = new Random();
@@ -19,54 +20,54 @@ public class Population {
 
 	public void inti() throws Exception {
 		ArrayList<Chromosome> listChromosomes = new ArrayList<Chromosome>();
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < Population.size; i++) {
 			listChromosomes.add(chromosome.create());
 		}
 		this.population = listChromosomes;
 		chromosome.loadVertex();
 	}
 
-	public void crossover(double rc) {
-		for (int i = 0; i < size / 4; i++) {
+	public void crossover(double rc, double rm) {
+		// for (int i = 0; i < size / 4; i++) {
+		while (this.population.size() < 2 * Population.size) {
 			double pc = random.nextDouble();
 			if (pc < rc) {
-				int h = random.nextInt(size - 1);
-				int k = random.nextInt(size - 1);
-				Chromosome childChromosome1 = chromosome.crossover(this.population.get(h), this.population.get(k));
-				h=random.nextInt(size-1);
-				k=random.nextInt(size-1);
-				Chromosome childChromosome2 = chromosome.crossover(this.population.get(k), this.population.get(h));
+				int h = random.nextInt(Population.size - 1);
+				int k = random.nextInt(Population.size - 1);
+				Chromosome childChromosome1 = chromosome.crossoverCycle(this.population.get(h), this.population.get(k));
+				h = random.nextInt(Population.size - 1);
+				k = random.nextInt(Population.size - 1);
+				Chromosome childChromosome2 = chromosome.crossoverCycle(this.population.get(k), this.population.get(h));
 				if (childChromosome1.getVertex().size() != 0 && childChromosome2.getVertex().size() != 0) {
 					this.population.add(childChromosome1);
 					this.population.add(childChromosome2);
 				}
-			}
+			} else {
 
-		}
-	}
-
-	public void mutation(double rm) {
-		for (int i = 0; i < size / 4; i++) {
-			double pm = random.nextDouble();
-			if (pm < rm) {
-				int h = random.nextInt(size - 1);
-				Chromosome childChromosome = chromosome.mutation(this.population.get(h));
-				if (childChromosome.getVertex().size() != 0) {
-					this.population.add(childChromosome);
+				double pm = random.nextDouble();
+				if (pm < rm) {
+					int h = random.nextInt(Population.size - 1);
+					Chromosome childChromosome = chromosome.mutation(this.population.get(h));
+					if (childChromosome.getVertex().size() != 0) {
+						this.population.add(childChromosome);
+					}
 				}
 			}
+
 		}
 	}
+
+
 
 	public Chromosome getBest() {
 		Chromosome bestChromosome = this.population.get(0);
-		double best = chromosome.fitness(bestChromosome);
-		for (int i = 1; i < this.population.size(); i++) {
-			if (chromosome.fitness(this.population.get(i)) > best) {
-				bestChromosome = this.population.get(i);
-				best = chromosome.fitness(bestChromosome);
-			}
-		}
+//		double best = chromosome.fitness(bestChromosome);
+//		for (int i = 1; i < this.population.size(); i++) {
+//			if (chromosome.fitness(this.population.get(i)) > best) {
+//				bestChromosome = this.population.get(i);
+//				best = chromosome.fitness(bestChromosome);
+//			}
+//		}
 		return bestChromosome;
 	}
 
@@ -84,8 +85,18 @@ public class Population {
 			}
 		});
 		ArrayList<Chromosome> childPopulation = new ArrayList<Chromosome>();
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < Population.size / 2; i++) {
 			childPopulation.add(this.population.get(i));
+		}
+		while (childPopulation.size() < Population.size) {
+			int x = random.nextInt(2 * Population.size - 1);
+			int y = random.nextInt(2 * Population.size - 1);
+			Chromosome gen1 = this.population.get(x);
+			Chromosome gen2 = this.population.get(y);
+			if (chromosome.fitness(gen1) > chromosome.fitness(gen2))
+				childPopulation.add(gen1);
+			else
+				childPopulation.add(gen2);
 		}
 		this.population = childPopulation;
 

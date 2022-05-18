@@ -160,7 +160,7 @@ public class Individual {
 	}
 
 	public double fitness() {
-		double w1 = 0.3, w2 = 0.35, w3 = 0.35;
+		double w1 = 0.4, w2 = 0.3, w3 = 0.3;
 		int M = 0;
 		for (int i = 0; i < K; i++) { // object 1: minimmum selcted node
 			if (this.chromosome.get(i) != 0)

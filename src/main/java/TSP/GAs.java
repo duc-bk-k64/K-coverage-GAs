@@ -14,8 +14,7 @@ public class GAs {
 	}
 
 	public void algorithms(int max_interation, double rc, double rm) throws Exception {
-		 //for(int i=0;i<5;i++) {
-		// Instant timeInstant=Instant.now();
+		
 		Population population = new Population();
 		Chromosome chromosome = new Chromosome();
 		population.inti();
@@ -24,14 +23,11 @@ public class GAs {
 		double[] generation = new double[max_interation];
 		while (k != max_interation) {
 			generation[k] = (double) k;
-			population.crossover(rc);
-			population.mutation(rm);
+			population.crossover(rc, rm);
+			// population.mutation(rm);
 			population.select();
 			result[k] = -chromosome.fitness(population.getBest());
 			k++;
-			// System.out.print("Generation "+k+":");
-//			population.getBest().printf();
-//			System.out.println(chromosome.fitness(population.getBest()));
 		}
 		population.getBest().printf();
 		System.out.println(-chromosome.fitness(population.getBest()));
@@ -43,7 +39,7 @@ public class GAs {
 		frame.setContentPane(plot);
 		frame.setVisible(true);
 
-	//	 }
+		// }
 
 	}
 
@@ -60,13 +56,13 @@ public class GAs {
 		}
 		read.close();
 		Chromosome chromosome = new Chromosome(list);
-		System.out.println("Optimum result:"+-chromosome.fitness(chromosome));
+		System.out.println("Optimum result:" + -chromosome.fitness(chromosome));
 	}
 
 	public static void main(String args[]) throws Exception {
 		GAs gAs = new GAs();
-		gAs.algorithms(1000, 0.85, 0.15);
-		gAs.optimumResult("D:/att48.opt.tour.txt");
+		gAs.algorithms(5000, 0.8, 0.1);
+		gAs.optimumResult("D:/eil51.opt.tour.txt");
 	}
 
 }
