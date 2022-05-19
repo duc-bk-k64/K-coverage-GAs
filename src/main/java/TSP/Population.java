@@ -3,6 +3,7 @@ package TSP;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 
 public class Population {
@@ -34,14 +35,11 @@ public class Population {
 			if (pc < rc) {
 				int h = random.nextInt(Population.size - 1);
 				int k = random.nextInt(Population.size - 1);
-				Chromosome childChromosome1 = chromosome.crossoverCycle(this.population.get(h), this.population.get(k));
-				h = random.nextInt(Population.size - 1);
-				k = random.nextInt(Population.size - 1);
-				Chromosome childChromosome2 = chromosome.crossoverCycle(this.population.get(k), this.population.get(h));
-				if (childChromosome1.getVertex().size() != 0 && childChromosome2.getVertex().size() != 0) {
-					this.population.add(childChromosome1);
-					this.population.add(childChromosome2);
-				}
+				List<Chromosome> childChromosome1 = chromosome.crossoverCycle(this.population.get(h),
+						this.population.get(k));
+				this.population.add(childChromosome1.get(0));
+				this.population.add(childChromosome1.get(1));
+
 			} else {
 
 				double pm = random.nextDouble();
@@ -56,8 +54,6 @@ public class Population {
 
 		}
 	}
-
-
 
 	public Chromosome getBest() {
 		Chromosome bestChromosome = this.population.get(0);

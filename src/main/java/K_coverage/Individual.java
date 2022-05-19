@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Individual {
-	public static int K = 200; // number of potentiol position
-	public static int N = 100; // number of targets
+	public static int K = 121; // number of potentiol position
+	public static int N = 40; // number of targets
 	private ArrayList<Integer> chromosome;
 	public static ArrayList<Target> targets;
 	public static ArrayList<Sensor> position;
-	public static int k = 3; // k-coverage
+	public static int k = 2; // k-coverage
 	public static int m = 2; // m-connected
-	public static int xmax = 300;
-	public static int ymax = 300;
+	public static int xmax = 100;
+	public static int ymax = 100;
 
 	public Individual() {
 
@@ -92,7 +92,7 @@ public class Individual {
 		ArrayList<Sensor> list = new ArrayList<Sensor>();
 		for (int i = 0; i < K; i++) {
 			Sensor sensor = new Sensor(Individual.xmax * random.nextDouble(), Individual.ymax * random.nextDouble(),
-					50.0, 100.0);
+					30.0, 30.0);
 			list.add(sensor);
 		}
 		Individual.setPosition(list);

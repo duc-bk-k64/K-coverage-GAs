@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import MFEA_TSP.Individuals;
+
 public class Chromosome {
 	private static int size = 51;
 	private ArrayList<Integer> vertex;
@@ -61,17 +63,57 @@ public class Chromosome {
 
 	}
 
-	public Chromosome crossoverCycle(Chromosome p, Chromosome q) {
-		ArrayList<Integer> a = new ArrayList<Integer>();
-		List<ArrayList<Integer>> list = this.findCycle(p, q);
-		for (int i = 0; i < list.size(); i++) {
-			list.get(i).forEach(k -> {
-				a.add(k);
-			});
+	public List<Chromosome> crossoverCycle(Chromosome p, Chromosome q) { // cycle crossover
+		List<ArrayList<Integer>> list = new ArrayList<>();
+		list = this.findCycle(p, q);
+		ArrayList<Integer> child1 = new ArrayList<>();
+		ArrayList<Integer> child2 = new ArrayList<>();
+		for (int i = 0; i < Chromosome.size; i++) {
+			child1.add(0);
+			child2.add(0);
 		}
-		Chromosome chromosome = new Chromosome();
-		chromosome.setVertex(a);
-		return chromosome;
+		for (int i = 0; i < list.size(); i++) {
+			ArrayList<Integer> data = list.get(i);
+			if (i % 2 == 0) {
+				for (int k = 0; k < data.size(); k++) {
+					for (int j = 0; j < Chromosome.size; j++) {
+						if (data.get(k) == p.getVertex().get(j)) {
+							child1.set(j, data.get(k));
+						}
+					}
+				}
+				for (int k = 0; k < data.size(); k++) {
+					for (int j = 0; j < Chromosome.size; j++) {
+						if (data.get(k) == q.getVertex().get(j)) {
+							child2.set(j, data.get(k));
+						}
+					}
+				}
+			} else {
+				for (int k = 0; k < data.size(); k++) {
+					for (int j = 0; j < Chromosome.size; j++) {
+						if (data.get(k) == q.getVertex().get(j)) {
+							child1.set(j, data.get(k));
+						}
+					}
+				}
+				for (int k = 0; k < data.size(); k++) {
+					for (int j = 0; j < Chromosome.size; j++) {
+						if (data.get(k) == p.getVertex().get(j)) {
+							child2.set(j, data.get(k));
+						}
+					}
+				}
+			}
+		}
+		Chromosome individuals = new Chromosome();
+		individuals.setVertex(child1);
+		Chromosome individuals2 = new Chromosome();
+		individuals2.setVertex(child2);
+		List<Chromosome> listIndividuals = new ArrayList<>();
+		listIndividuals.add(individuals);
+		listIndividuals.add(individuals2);
+		return listIndividuals;
 	}
 
 	public Chromosome mutation(Chromosome p) {
