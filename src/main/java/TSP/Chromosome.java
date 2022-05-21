@@ -169,6 +169,33 @@ public class Chromosome {
 		sum += point.distance(data.get(p.vertex.get(0)), data.get(p.vertex.get(p.getVertex().size() - 1)));
 		return -sum;
 	}
+	public double fitnessTRP(Chromosome p, int x) { // x is first city
+		double sum = 0.0;
+		int t = 0;
+		int position = 0;
+		for (int i = 0; i <Chromosome.size; i++) { // find index of city x
+			if (p.getVertex().get(i) == x) {
+				position = i;
+				break;
+			}
+		}
+		double distance = 0.0;
+		while (t != (Chromosome.size - 1)) {
+			t++;
+			distance += point.distance(data.get(p.getVertex().get(position)),
+					data.get(p.getVertex().get(increCycle(position + 1))));
+			sum += distance;
+			position = increCycle(position + 1);
+		}
+		return sum / Chromosome.size;
+
+	}
+	public int increCycle(int x) {
+		if (x < Chromosome.size)
+			return x;
+		else
+			return x - Chromosome.size;
+	}
 
 	@SuppressWarnings("static-access")
 	public void loadVertex() throws Exception {

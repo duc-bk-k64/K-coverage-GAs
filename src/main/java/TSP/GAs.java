@@ -31,6 +31,7 @@ public class GAs {
 		}
 		population.getBest().printf();
 		System.out.println(-chromosome.fitness(population.getBest()));
+		System.out.println(chromosome.fitnessTRP(population.getBest(),1));
 		Plot2DPanel plot = new Plot2DPanel();
 		plot.addLinePlot("Result", generation, result);
 		// plot.addPlot(null);

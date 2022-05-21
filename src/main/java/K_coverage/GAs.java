@@ -23,7 +23,8 @@ public class GAs {
 			if (k > 100 && (Math.abs(result[k] - result[k - 100])) < 0.0001)
 				break;
 			k++;
-			System.out.println("Generation " + k + " Fitness value:" + population.getPopulation().get(0).fitness());
+			if (k % 20 == 0)
+				System.out.println("Generation " + k + " Fitness value:" + population.getPopulation().get(0).fitness());
 		}
 		population.getPopulation().get(0).print();
 		int M = 0;

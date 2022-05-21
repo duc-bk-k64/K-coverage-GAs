@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Population {
-	public static int size = 200;
+	public static int size = 100;
 	private ArrayList<Chromosome> population;
 	private Chromosome chromosome = new Chromosome();
 	private Random random = new Random();
@@ -81,19 +81,19 @@ public class Population {
 			}
 		});
 		ArrayList<Chromosome> childPopulation = new ArrayList<Chromosome>();
-		for (int i = 0; i < Population.size / 2; i++) {
+		for (int i = 0; i < Population.size ; i++) {
 			childPopulation.add(this.population.get(i));
 		}
-		while (childPopulation.size() < Population.size) {
-			int x = random.nextInt(2 * Population.size - 1);
-			int y = random.nextInt(2 * Population.size - 1);
-			Chromosome gen1 = this.population.get(x);
-			Chromosome gen2 = this.population.get(y);
-			if (chromosome.fitness(gen1) > chromosome.fitness(gen2))
-				childPopulation.add(gen1);
-			else
-				childPopulation.add(gen2);
-		}
+//		while (childPopulation.size() < Population.size) {
+//			int x = random.nextInt(2 * Population.size - 1);
+//			int y = random.nextInt(2 * Population.size - 1);
+//			Chromosome gen1 = this.population.get(x);
+//			Chromosome gen2 = this.population.get(y);
+//			if (chromosome.fitness(gen1) > chromosome.fitness(gen2))
+//				childPopulation.add(gen1);
+//			else
+//				childPopulation.add(gen2);
+//		}
 		this.population = childPopulation;
 
 	}
@@ -116,19 +116,23 @@ public class Population {
 
 	}
 
-//	public static void main(String args[]) throws Exception {
-//		Population population = new Population();
-//		Chromosome chromosome = new Chromosome();
-//		population.inti();
-//		for (int k = 0; k < 100; k++) {
-//			population.crossover(0.9);
-//			population.mutation(0.5);
-//			// population.printPopulation();
-//			System.out.println("BEST CHROMOSOME:");
-//			population.getBest().printf();
-//			System.out.println(chromosome.fitness(population.getBest()));
-//			population.select();
-//
-//		}
-//	}
+	public static void main(String args[]) throws Exception {
+		Population population = new Population();
+		Chromosome chromosome = new Chromosome();
+		population.inti();
+		population.crossover(0.9, 0.1);
+		population.getPopulation().forEach(gen -> {
+			gen.getVertex().forEach(l -> {
+				System.out.print(" " + l);
+			});
+			System.out.println();
+		});
+		// population.mutation(0.5);
+		// population.printPopulation();
+		System.out.println("BEST CHROMOSOME:");
+		population.getBest().printf();
+		System.out.println(chromosome.fitness(population.getBest()));
+		population.select();
+
+	}
 }

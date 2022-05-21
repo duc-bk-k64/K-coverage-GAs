@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Individual {
-	public static int K = 121; // number of potentiol position
-	public static int N = 40; // number of targets
+	public static int K = 200; // number of potentiol position
+	public static int N = 100; // number of targets
 	private ArrayList<Integer> chromosome;
 	public static ArrayList<Target> targets;
 	public static ArrayList<Sensor> position;
-	public static int k = 2; // k-coverage
+	public static int k = 3; // k-coverage
 	public static int m = 2; // m-connected
-	public static int xmax = 100;
-	public static int ymax = 100;
+	public static int xmax = 300;
+	public static int ymax = 300;
 
 	public Individual() {
 
@@ -92,7 +92,7 @@ public class Individual {
 		ArrayList<Sensor> list = new ArrayList<Sensor>();
 		for (int i = 0; i < K; i++) {
 			Sensor sensor = new Sensor(Individual.xmax * random.nextDouble(), Individual.ymax * random.nextDouble(),
-					30.0, 30.0);
+					50.0, 100.0);
 			list.add(sensor);
 		}
 		Individual.setPosition(list);
@@ -181,8 +181,8 @@ public class Individual {
 				sumCom += this.ComCost(i);
 		}
 		result += w3 * (double) sumCom / (M * m);
-		double a1 = 1.0 / (2 * Individual.N);
-		double a2 = 1.0 / (Individual.K * Individual.m + Individual.N * Individual.k);
+		double a1 = 0.1;//1.0 / (2 * Individual.N);
+		double a2 = 0.1;//1.0 / (Individual.K * Individual.m + Individual.N * Individual.k);
 		if (this.check() == 0)
 			return result;
 		else {

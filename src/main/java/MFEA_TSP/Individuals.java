@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Individuals {
-	public static int size = 4;
+	public static int size = 51;
 	public static ArrayList<Point> data;
 	private ArrayList<Integer> chromosome;
 	public Point point = new Point();
@@ -15,7 +15,7 @@ public class Individuals {
 	private ArrayList<Integer> rank;
 	private double Scalarfitness;
 	private int SkillFactor;
-	
+
 	public ArrayList<Double> getFactCost() {
 		return FactCost;
 	}
@@ -50,24 +50,24 @@ public class Individuals {
 
 	public Individuals create() {
 		ArrayList<Integer> litsArrayList = new ArrayList<Integer>();
-		for (int i = 1; i <= size; i++)
+		for (int i = 1; i <= Individuals.size; i++)
 			litsArrayList.add(i);
 		Collections.shuffle(litsArrayList);
 		Individuals individuals = new Individuals();
 		individuals.setChromosome(litsArrayList);
+		individuals.setSkillFactor(0);
 		return individuals;
 	}
 
 	public void readData(String url) throws Exception {
-		// Individuals.data = point.readData(url);
-		ArrayList<Point> list = new ArrayList<>();
-		for (int i = 0; i < Individuals.size; i++) {
-			Point point = new Point((double) (i), (double) i);
-			list.add(point);
-		}
-		Point zPoint=new Point(1.0,0.0);
-		list.add(zPoint);
-		Individuals.data = list;
+		Individuals.data = point.readData(url);
+//		ArrayList<Point> list = new ArrayList<>();
+//		for (int i = 0; i <= Individuals.size; i++) {
+//			Point point = new Point((double) (random.nextInt(15)), (double) random.nextInt(15));
+//			list.add(point);
+//		}
+//
+//		Individuals.data = list;
 	}
 
 	public List<ArrayList<Integer>> findCycle(Individuals p, Individuals q) {
@@ -100,6 +100,33 @@ public class Individuals {
 			}
 		}
 		return cycle;
+	}
+
+	public Individuals RVND(int x) {
+		ArrayList<Individuals> list = new ArrayList<>();
+		ArrayList<Integer> chromosome = new ArrayList<>();
+		for (int j = 0; j < Individuals.size; j++) {
+			chromosome.add(0);
+		}
+		for (int i = 0; i < 5; i++) {
+			int h = random.nextInt(Individuals.size - 1);
+			int k = random.nextInt(Individuals.size - 1);
+			for (int j = 0; j < Individuals.size; j++) {
+				chromosome.set(j, this.getChromosome().get(j));
+			}
+			Collections.swap(chromosome, h, k);
+			Individuals individuals = new Individuals();
+			individuals.setChromosome(chromosome);
+			list.add(individuals);
+		}
+		for (int i = 0; i < list.size(); i++) {
+			if (this.fitnessTSP(this) > this.fitnessTSP(list.get(i))
+					|| this.fitnessTRP(this, x) > this.fitnessTRP(list.get(i), x))
+				return list.get(i);
+
+		}
+		return null;
+
 	}
 
 	public List<Individuals> crossover(Individuals p, Individuals q) { // cycle crossover
@@ -196,22 +223,23 @@ public class Individuals {
 			distance += point.distance(data.get(p.getChromosome().get(position)),
 					data.get(p.getChromosome().get(increCycle(position + 1))));
 			sum += distance;
-			position = increCycle(position+1);
+			position = increCycle(position + 1);
 		}
 		return sum / Individuals.size;
 
 	}
-	public List<Double> FactCost(Individuals p,int x) { //x is the first city
-		Double tsp=this.fitnessTSP(p);
-		Double trp=this.fitnessTRP(p,x);
-		List<Double> list=new ArrayList<>();
+
+	public List<Double> FactCost(Individuals p, int x) { // x is the first city
+		Double tsp = this.fitnessTSP(p);
+		Double trp = this.fitnessTRP(p, x);
+		List<Double> list = new ArrayList<>();
 		list.add(tsp);
 		list.add(trp);
 		return list;
 	}
-	
+
 	public int increCycle(int x) {
-		if (x <= Individuals.size)
+		if (x < Individuals.size)
 			return x;
 		else
 			return x - Individuals.size;
@@ -231,39 +259,56 @@ public class Individuals {
 			p.add(i);
 		Individuals individuals = new Individuals();
 		individuals.setChromosome(p);
-		Individuals zIndividuals = new Individuals();
-		zIndividuals.readData(null);
-		System.out.println(zIndividuals.fitnessTSP(individuals));
-		System.out.println(zIndividuals.fitnessTRP(individuals, 1));
-
 //		Individuals zIndividuals = new Individuals();
-//		ArrayList<Integer> q = new ArrayList<>();
-//		q.add(2);
-//		q.add(4);
-//		q.add(6);
-//		q.add(3);
-//		q.add(1);
-//		q.add(5);
-//		q.add(9);
-//		q.add(8);
-//		q.add(7);
+//		Individuals individuals = zIndividuals.create();
+//		for (int i = 0; i < Individuals.size; i++)
+//			System.out.println(individuals.getChromosome().get(i));
+//		zIndividuals.readData(null);
+//		System.out.println(zIndividuals.fitnessTSP(individuals));
+//		System.out.println(zIndividuals.fitnessTRP(individuals, 1));
+
+		Individuals zIndividuals = new Individuals();
+		ArrayList<Integer> q = new ArrayList<>();
+		q.add(2);
+		q.add(4);
+		q.add(6);
+		q.add(3);
+		q.add(1);
+		q.add(5);
+		q.add(9);
+		q.add(8);
+		q.add(7);
 //		Individuals individuals = new Individuals();
 //		individuals.setChromosome(p);
-//		Individuals individuals2 = new Individuals();
-//		individuals2.setChromosome(q);
+		Individuals individuals2 = new Individuals();
+		individuals2.setChromosome(q);
+		zIndividuals.readData(null);
+		System.out.println(zIndividuals.fitnessTSP(individuals2) + " " + zIndividuals.fitnessTRP(individuals2, 1));
+		Individuals individuals3 = individuals2.RVND(1);
+		if (individuals3 != null)
+			System.out.println(zIndividuals.fitnessTSP(individuals3) + " " + zIndividuals.fitnessTRP(individuals3, 1));
 //		zIndividuals.findCycle(individuals, individuals2).forEach(list -> {
 //			for (int i = 0; i < list.size(); i++)
 //				System.out.print(" " + list.get(i));
 //			System.out.println();
 //		});
-//		// zIndividuals.crossover(individuals, individuals2);
-//		for (int i = 0; i < Individuals.size; i++) {
-//			System.out.print(" " + individuals.getChromosome().get(i));
-//		}
-//		System.out.println();
-//		for (int i = 0; i < Individuals.size; i++) {
-//			System.out.print(" " + individuals2.getChromosome().get(i));
-//		}
+		zIndividuals.crossover(individuals, individuals2).forEach(gen -> {
+			for (int i = 0; i < Individuals.size; i++) {
+				System.out.print(" " + gen.getChromosome().get(i));
+			}
+			System.out.println();
+		});
+		zIndividuals.mutation(individuals).getChromosome().forEach(l -> {
+			System.out.print(l + " ");
+		});
+		System.out.println();
+		for (int i = 0; i < Individuals.size; i++) {
+			System.out.print(" " + individuals.getChromosome().get(i));
+		}
+		System.out.println();
+		for (int i = 0; i < Individuals.size; i++) {
+			System.out.print(" " + individuals2.getChromosome().get(i));
+		}
 	}
 
 }
