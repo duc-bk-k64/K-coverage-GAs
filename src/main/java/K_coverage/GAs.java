@@ -58,6 +58,6 @@ public class GAs {
 
 	public static void main(String args[]) {
 		GAs gAs = new GAs();
-		gAs.solve(1000, 0.8, 0.03);
+		gAs.solve(5000, 0.8, 0.03);
 	}
 }

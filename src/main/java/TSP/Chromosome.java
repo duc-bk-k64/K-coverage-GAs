@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
-import MFEA_TSP.Individuals;
-
 public class Chromosome {
 	private static int size = 51;
 	private ArrayList<Integer> vertex;

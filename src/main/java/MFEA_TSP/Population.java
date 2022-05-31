@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Population {
-	public static int size = 60;
+	public static int size = 100;
 	private ArrayList<Individuals> population;
 	private ArrayList<Double> p;
 	private Individuals individuals = new Individuals();
@@ -25,8 +25,16 @@ public class Population {
 	public void validate(int x) {
 		for (int i = 0; i < this.population.size(); i++) { // set factorial cost
 			ArrayList<Double> list = new ArrayList<>();
-			list.add(individuals.fitnessTSP(this.population.get(i)));
-			list.add(individuals.fitnessTRP(this.population.get(i), 1));
+			if (this.population.get(i).getSkillFactor() == 0) {
+				list.add(individuals.fitnessTSP(this.population.get(i)));
+				list.add(individuals.fitnessTRP(this.population.get(i), x));
+			} else if (this.population.get(i).getSkillFactor() == 1) { //only caculate fitness for task=skill factor
+				list.add(individuals.fitnessTSP(this.population.get(i)));
+				list.add(9999.0);
+			} else {
+				list.add(9999.0);
+				list.add(individuals.fitnessTRP(this.population.get(i), x));
+			}
 			this.population.get(i).setFactCost(list);
 		}
 		Collections.sort(this.population, new Comparator<Individuals>() { // caculate rank for TSP
@@ -249,23 +257,40 @@ public class Population {
 
 	}
 
-	public Individuals getbest() {
+	public Individuals getbestTSP() {
 		Collections.sort(this.population, new Comparator<Individuals>() {
 			public int compare(Individuals p, Individuals q) {
-//				Double a = individuals.fitnessTSP(p);
-//				Double b = individuals.fitnessTSP(q);
-				double a = p.getScalarfitness();
-				double b = q.getScalarfitness();
+//				double a = individuals.fitnessTSP(p);
+//				double b = individuals.fitnessTSP(q);
+				double a = p.getFactCost().get(0);
+				double b = q.getFactCost().get(0);
 				if (a > b)
-					return -1;
+					return 1;
 				else if (a == b)
 					return 0;
 				else
-					return 1;
+					return -1;
 			}
 		});
 		return this.population.get(0);
 
+	}
+	public Individuals getBestTRP() {
+		Collections.sort(this.population, new Comparator<Individuals>() {
+			public int compare(Individuals p, Individuals q) {
+//				double a = individuals.fitnessTSP(p);
+//				double b = individuals.fitnessTSP(q);
+				double a = p.getFactCost().get(1);
+				double b = q.getFactCost().get(1);
+				if (a > b)
+					return 1;
+				else if (a == b)
+					return 0;
+				else
+					return -1;
+			}
+		});
+		return this.population.get(0);
 	}
 
 	public ArrayList<Double> getP() {
@@ -284,29 +309,29 @@ public class Population {
 		this.population = population;
 	}
 
-	public static void main(String args[]) throws Exception {
-		Population population = new Population();
-		population.init();
-		population.validate(1);
-		Individuals individuals = population.getbest();
-		System.out.println(individuals.fitnessTSP(individuals) + " " + individuals.fitnessTRP(individuals, 1) + " "
-				+ individuals.getScalarfitness());
-		System.out.println("===================");
-		for (int i = 0; i < 30; i++) {
-			population.calRouteWheel();
-			population.crossoverAmutation(0.8, 0.1);
-			population.RVND(1);
-		//	population.select();
-			population.validate(1);
-			population.select();
-			individuals = population.getbest();
-			System.out.println(individuals.fitnessTSP(individuals) + " " + individuals.fitnessTRP(individuals, 1) + " "
-					+ individuals.getScalarfitness());
-
-			System.out.println("===================");
-			// population.print();
-		}
-		// population.getPopulation().forEach();
-	}
+//	public static void main(String args[]) throws Exception {
+//		Population population = new Population();
+//		population.init();
+//		population.validate(1);
+//		Individuals individuals = population.getbest();
+//		System.out.println(individuals.fitnessTSP(individuals) + " " + individuals.fitnessTRP(individuals, 1) + " "
+//				+ individuals.getScalarfitness());
+//		System.out.println("===================");
+//		for (int i = 0; i < 30; i++) {
+//			population.calRouteWheel();
+//			population.crossoverAmutation(0.8, 0.1);
+//			population.RVND(1);
+//		//	population.select();
+//			population.validate(1);
+//			population.select();
+//			individuals = population.getbest();
+//			System.out.println(individuals.fitnessTSP(individuals) + " " + individuals.fitnessTRP(individuals, 1) + " "
+//					+ individuals.getScalarfitness());
+//
+//			System.out.println("===================");
+//			// population.print();
+//		}
+//		// population.getPopulation().forEach();
+//	}
 
 }

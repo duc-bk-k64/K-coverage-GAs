@@ -21,23 +21,26 @@ public class MFEA {
 		while (k < max_iteration) {
 
 			generation[k] = k;
-			//System.out.println(k);
+			// System.out.println(k);
 			population.calRouteWheel();
 			population.crossoverAmutation(pm, pc);
 			population.RVND(x);
 			population.validate(x);
 			population.select();
-			Individuals individuals = population.getbest();
-			System.out.println("Generation:"+k+" "+ zIndividuals.fitnessTSP(individuals) + " " + zIndividuals.fitnessTRP(individuals, x)); 
+			Individuals individuals = population.getbestTSP();
+			Individuals individuals2 = population.getBestTRP();
+			System.out.println("Generation:" + k + " " + zIndividuals.fitnessTSP(individuals) + " "
+					+ zIndividuals.fitnessTRP(individuals2, x));
 			tsp[k] = zIndividuals.fitnessTSP(individuals);
-			trp[k] = zIndividuals.fitnessTRP(individuals, x);
+			trp[k] = zIndividuals.fitnessTRP(individuals2, x);
 			k++;
 		}
-		Individuals individuals = population.getbest();
-		System.out.print(zIndividuals.fitnessTSP(individuals) + " " + zIndividuals.fitnessTRP(individuals, x));
+		Individuals individuals = population.getbestTSP();
+		Individuals individuals2=population.getbestTSP();
+		System.out.print(zIndividuals.fitnessTSP(individuals) + " " + zIndividuals.fitnessTRP(individuals2, x));
 		Plot2DPanel plot = new Plot2DPanel();
-		plot.addLinePlot("TSP",Color.RED, generation,tsp);
-		plot.addLinePlot("TRP",Color.BLUE, generation,trp);
+		plot.addLinePlot("TSP", Color.RED, generation, tsp);
+		plot.addLinePlot("TRP", Color.BLUE, generation, trp);
 		JFrame frame = new JFrame("Result");
 		frame.setSize(800, 1000);
 		frame.setContentPane(plot);
@@ -46,6 +49,6 @@ public class MFEA {
 
 	public static void main(String args[]) throws Exception {
 		MFEA mfea = new MFEA();
-		mfea.solve(2000, 0.8, 0.05, 1);
+		mfea.solve(5000, 0.7, 0.03, 1);
 	}
 }

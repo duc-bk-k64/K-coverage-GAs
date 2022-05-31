@@ -119,6 +119,7 @@ public class Population {
 			}
 
 		});
+	
 		ArrayList<Individual> childPopulation = new ArrayList<Individual>(); // select best individual for child
 																				// population
 		if (fesibale.size() >= size - 2 && infesible.size() >= 2) {
@@ -135,7 +136,7 @@ public class Population {
 			}
 
 		}
-
+	
 		this.population = childPopulation;
 
 	}
