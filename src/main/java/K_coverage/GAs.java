@@ -60,7 +60,7 @@ public class GAs {
 	}
 
 	public static void main(String args[]) throws IOException {
-		 for (int i = 0; i < 5; i++) {
+		 for (int i = 0; i < 1; i++) {
 		GAs gAs = new GAs();
 		gAs.solve(5000, 0.8, 0.03);
 		 }

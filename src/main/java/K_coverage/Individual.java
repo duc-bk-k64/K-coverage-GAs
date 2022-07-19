@@ -17,8 +17,8 @@ public class Individual {
 	private ArrayList<Integer> chromosome;
 	public static ArrayList<Target> targets;
 	public static ArrayList<Sensor> position;
-	public static int k = 1; // k-coverage
-	public static int m = 1; // m-connected
+	public static int k = 3; // k-coverage
+	public static int m = 2; // m-connected
 	public static int xmax = 300;
 	public static int ymax = 300;
 	public static double[][] xy = new double[Individual.K][2];
@@ -91,8 +91,8 @@ public class Individual {
 
 	public void readData(String url) throws IOException {
 		// read data from file txt
-		FileWriter writer = new FileWriter("D:/targettest.txt", true);
-		FileWriter writers = new FileWriter("D:/positiontest.txt", true);
+		FileWriter writer = new FileWriter("D:/targetgauss.txt", true);
+		FileWriter writers = new FileWriter("D:/positiongauss.txt", true);
 		Random random = new Random();
 		ArrayList<Target> listTargets = new ArrayList<Target>();
 		for (int i = 0; i < N; i++) {
@@ -267,7 +267,7 @@ public class Individual {
 
 	public void write() throws IOException {
 		int[][] sparseMatrix = new int[Individual.xmax * 2][Individual.ymax * 2];
-		FileWriter writer = new FileWriter("D:/resulttest.txt", true);
+		FileWriter writer = new FileWriter("D:/resultgauss.txt", true);
 		for (int i = 0; i < Individual.xmax * 2; i++) {
 			for (int j = 0; j < Individual.ymax * 2; j++) {
 				int k = 0;
