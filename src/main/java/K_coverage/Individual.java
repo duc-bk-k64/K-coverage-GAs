@@ -1,18 +1,29 @@
 package K_coverage;
 
+import java.awt.Color;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.JFrame;
+
+import org.math.plot.Plot2DPanel;
+import org.math.plot.plots.ScatterPlot;
+
 public class Individual {
-	public static int K = 800; // number of potentiol position
-	public static int N = 500; // number of targets
+	public static int K = 200; // number of potential position
+	public static int N = 100; // number of targets
 	private ArrayList<Integer> chromosome;
 	public static ArrayList<Target> targets;
 	public static ArrayList<Sensor> position;
-	public static int k = 3; // k-coverage
-	public static int m = 2; // m-connected
-	public static int xmax = 1000;
-	public static int ymax = 1000;
+	public static int k = 1; // k-coverage
+	public static int m = 1; // m-connected
+	public static int xmax = 300;
+	public static int ymax = 300;
+	public static double[][] xy = new double[Individual.K][2];
+	public static double[][] ss = new double[Individual.K][2];
+	public static int count = 0;
 
 	public Individual() {
 
@@ -78,23 +89,56 @@ public class Individual {
 		System.out.println();
 	}
 
-	public void readData(String url) {
+	public void readData(String url) throws IOException {
 		// read data from file txt
+		FileWriter writer = new FileWriter("D:/targettest.txt", true);
+		FileWriter writers = new FileWriter("D:/positiontest.txt", true);
 		Random random = new Random();
 		ArrayList<Target> listTargets = new ArrayList<Target>();
 		for (int i = 0; i < N; i++) {
 			Target target = new Target();
-			target.setX(Individual.xmax * random.nextDouble());
-			target.setY(Individual.ymax * random.nextDouble());
+			double x = -2.5, y = -2.5;
+			while (x <= -2.0 || x >= 2.0) {
+				x = random.nextGaussian();
+
+			}
+			while (y <= -2.0 || y >= 2.0) {
+				y = random.nextGaussian();
+
+			}
+			x=Math.abs(x);
+			y=Math.abs(y);
+			target.setX(Individual.xmax * x / 2);
+			target.setY(Individual.ymax * y / 2);
+			xy[i][0] = target.getX();
+			xy[i][1] = target.getY();
+			writer.write(xy[i][0] + " " + xy[i][1] + "\n");
 			listTargets.add(target);
 		}
+		writer.write("-1\n");
+		writer.close();
+		Plot2DPanel plot = new Plot2DPanel();
+		ScatterPlot scatterPlot = new ScatterPlot("Targte", Color.BLUE, xy);
+		plot.plotCanvas.addPlot(scatterPlot);
 		Individual.setTargets(listTargets);
 		ArrayList<Sensor> list = new ArrayList<Sensor>();
 		for (int i = 0; i < K; i++) {
 			Sensor sensor = new Sensor(Individual.xmax * random.nextDouble(), Individual.ymax * random.nextDouble(),
 					50.0, 100.0);
+			ss[i][0] = sensor.getX();
+			ss[i][1] = sensor.getY();
+			writers.write(ss[i][0] + " " + ss[i][1] + "\n");
 			list.add(sensor);
 		}
+		writers.write("-1\n");
+		writers.close();
+		// Plot2DPanel plot = new Plot2DPanel();
+		ScatterPlot scatterPlot2 = new ScatterPlot("Targte", Color.RED, ss);
+		plot.plotCanvas.addPlot(scatterPlot2);
+		JFrame frame = new JFrame("Result");
+		frame.setSize(800, 1000);
+		frame.setContentPane(plot);
+		//frame.setVisible(true);
 		Individual.setPosition(list);
 	}
 
@@ -218,6 +262,80 @@ public class Individual {
 				count += Individual.m - this.Com(i);
 		}
 		return count;
+
+	}
+
+	public void write() throws IOException {
+		int[][] sparseMatrix = new int[Individual.xmax * 2][Individual.ymax * 2];
+		FileWriter writer = new FileWriter("D:/resulttest.txt", true);
+		for (int i = 0; i < Individual.xmax * 2; i++) {
+			for (int j = 0; j < Individual.ymax * 2; j++) {
+				int k = 0;
+				for (int q = 0; q < Individual.K; q++) {
+					if (this.getChromosome().get(q) != 0) {
+						if (Individual.position.get(q).getX() >= j * 0.5
+								&& Individual.position.get(q).getX() < (j + 1) * 0.5) {
+							if (Individual.position.get(q).getY() >= i * 0.5
+									&& Individual.position.get(q).getY() < (i + 1) * 0.5) {
+								// writer.write("1 ");
+								sparseMatrix[j][i] = 1;
+								k++;
+								count++;
+								break;
+							}
+
+						}
+					}
+				}
+				if (k == 0)
+					sparseMatrix[j][i] = 0;
+				// writer.write("0 ");
+			}
+			// writer.write("\n");
+		}
+		// convert matrix to sparse
+		int size = 0;
+		for (int i = 0; i < Individual.xmax * 2; i++) {
+			for (int j = 0; j < Individual.ymax * 2; j++) {
+				if (sparseMatrix[i][j] != 0) {
+					size++;
+				}
+			}
+		}
+
+		// number of columns in compactMatrix (size) must be
+		// equal to number of non - zero elements in
+		// sparseMatrix
+		int compactMatrix[][] = new int[2][size];
+		// Making of new matrix
+		int z = 0;
+		for (int i = 0; i < Individual.xmax * 2; i++) {
+			for (int j = 0; j < Individual.ymax * 2; j++) {
+				if (sparseMatrix[i][j] != 0) {
+					compactMatrix[0][z] = i;
+					compactMatrix[1][z] = j;
+					// compactMatrix[2][z] = sparseMatrix[i][j];
+					z++;
+				}
+			}
+		}
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 70; j++) {
+				// System.out.printf("%d ", compactMatrix[i][j]);
+				if (j < size)
+					writer.write(compactMatrix[i][j] + " ");
+				else
+					writer.write("0 ");
+			}
+			writer.write("\n");
+			// System.out.printf("\n");
+		}
+//		for (int i = 0; i < size; i++) {
+//			writer.write(compactMatrix[0][i] + " " + compactMatrix[1][i] + "\n");
+//		}
+
+		writer.write("-1 \n");
+		writer.close();
 
 	}
 

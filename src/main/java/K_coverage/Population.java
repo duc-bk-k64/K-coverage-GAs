@@ -1,5 +1,6 @@
 package K_coverage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,7 +15,7 @@ public class Population {
 	ArrayList<Individual> fesibale = new ArrayList<Individual>();
 	ArrayList<Individual> infesible = new ArrayList<Individual>();
 
-	public void init() {
+	public void init() throws IOException {
 		ArrayList<Individual> list = new ArrayList<Individual>();
 		for (int i = 0; i < size; i++)
 			list.add(individual.create());

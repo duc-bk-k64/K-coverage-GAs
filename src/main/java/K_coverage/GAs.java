@@ -1,12 +1,13 @@
 package K_coverage;
 
 import java.awt.Color;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import org.math.plot.Plot2DPanel;
 
 public class GAs {
-	public void solve(int maxIteration, double pc, double pm) {
+	public void solve(int maxIteration, double pc, double pm) throws IOException {
 		Population population = new Population();
 		population.init();
 		int k = 0;
@@ -37,6 +38,8 @@ public class GAs {
 		population.printCoverage();
 		population.printConnected();
 		System.out.println("Violate:" + population.getPopulation().get(0).check());
+		population.getPopulation().get(0).write();
+		System.out.println(Individual.count);
 		Plot2DPanel plot = new Plot2DPanel();
 		if (k == maxIteration)
 			plot.addLinePlot("Result", generation, result);
@@ -52,12 +55,15 @@ public class GAs {
 		JFrame frame = new JFrame("Result");
 		frame.setSize(800, 1000);
 		frame.setContentPane(plot);
-		frame.setVisible(true);
+		//frame.setVisible(true);
 
 	}
 
-	public static void main(String args[]) {
+	public static void main(String args[]) throws IOException {
+		 for (int i = 0; i < 5; i++) {
 		GAs gAs = new GAs();
 		gAs.solve(5000, 0.8, 0.03);
+		 }
+		// 552
 	}
 }

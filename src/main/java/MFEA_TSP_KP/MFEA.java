@@ -31,22 +31,22 @@ public class MFEA {
 		population.getnestKP().printKP();
 		Plot2DPanel plot = new Plot2DPanel();
 		plot.addLinePlot("TSP", Color.RED, generation, tsp);
-		//plot.addLinePlot("TRP", Color.BLUE, generation, trp);
-		Plot2DPanel panel=new Plot2DPanel();
-		panel.addLinePlot("TRP", Color.BLUE, generation, trp);
+	    plot.addLinePlot("TRP", Color.BLUE, generation, trp);
+//		Plot2DPanel panel=new Plot2DPanel();
+//		panel.addLinePlot("TRP", Color.BLUE, generation, trp);
 		JFrame frame = new JFrame("Result");
 		frame.setSize(800, 1000);
 		frame.setContentPane(plot);
 		frame.setVisible(true);
-		JFrame frame2=new JFrame();
-		frame2.setSize(800,1000);
-		frame2.setContentPane(panel);
-		frame2.setVisible(true);
+//		JFrame frame2=new JFrame();
+//		frame2.setSize(800,1000);
+//		frame2.setContentPane(panel);
+//		frame2.setVisible(true);
 
 	}
 
 	public static void main(String args[]) throws Exception {
 		MFEA mfea = new MFEA();
-		mfea.solve(5000, 0.1);
+		mfea.solve(3000, 0.1);
 	}
 }
